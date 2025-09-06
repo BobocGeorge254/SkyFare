@@ -54,8 +54,12 @@ public class BookController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction
+            @RequestParam(defaultValue = "asc") String direction,
+            @RequestParam(required = false) Long authorId,
+            @RequestParam(required = false) Long categoryId
     ) {
-        return ResponseEntity.ok(bookService.getAllBooks(page, size, sortBy, direction));
+        return ResponseEntity.ok(
+                bookService.getAllBooks(page, size, sortBy, direction, authorId, categoryId)
+        );
     }
 }

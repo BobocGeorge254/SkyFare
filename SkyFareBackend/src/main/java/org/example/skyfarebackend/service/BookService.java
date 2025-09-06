@@ -106,12 +106,23 @@ public class BookService {
                 .orElseThrow(() -> new RuntimeException("Book not found with id " + id));
     }
 
-    public Page<Book> getAllBooks(int page, int size, String sortBy, String direction) {
+    public Page<Book> getAllBooks(int page, int size, String sortBy, String direction,
+                                  Long authorId, Long categoryId) {
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
                 : Sort.by(sortBy).ascending();
 
         Pageable pageable = PageRequest.of(page, size, sort);
-        return bookRepository.findAll(pageable);
+
+        if (authorId != null && categoryId != null) {
+            return bookRepository.findByAuthorIdAndCategoryId(authorId, categoryId, pageable);
+        } else if (authorId != null) {
+            return bookRepository.findByAuthorId(authorId, pageable);
+        } else if (categoryId != null) {
+            return bookRepository.findByCategoryId(categoryId, pageable);
+        } else {
+            return bookRepository.findAll(pageable);
+        }
     }
+
 }
