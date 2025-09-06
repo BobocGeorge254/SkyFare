@@ -1,7 +1,7 @@
 package org.example.skyfarebackend.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.skyfarebackend.model.Author;
+import org.example.skyfarebackend.model.entities.Author;
 import org.example.skyfarebackend.service.AuthorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

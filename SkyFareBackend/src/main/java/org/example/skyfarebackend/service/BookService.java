@@ -1,9 +1,9 @@
 package org.example.skyfarebackend.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.skyfarebackend.model.Author;
-import org.example.skyfarebackend.model.Book;
-import org.example.skyfarebackend.model.Category;
+import org.example.skyfarebackend.model.entities.Author;
+import org.example.skyfarebackend.model.entities.Book;
+import org.example.skyfarebackend.model.entities.Category;
 import org.example.skyfarebackend.repository.AuthorRepository;
 import org.example.skyfarebackend.repository.BookRepository;
 import org.example.skyfarebackend.repository.CategoryRepository;

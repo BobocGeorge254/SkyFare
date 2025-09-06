@@ -1,7 +1,7 @@
 package org.example.skyfarebackend.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.skyfarebackend.model.User;
+import org.example.skyfarebackend.model.entities.User;
 import org.example.skyfarebackend.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

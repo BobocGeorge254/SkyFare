@@ -1,7 +1,7 @@
 package org.example.skyfarebackend.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.skyfarebackend.model.Category;
+import org.example.skyfarebackend.model.entities.Category;
 import org.example.skyfarebackend.service.CategoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

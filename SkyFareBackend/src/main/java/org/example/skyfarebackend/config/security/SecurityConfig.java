@@ -1,4 +1,4 @@
-package org.example.skyfarebackend.config;
+package org.example.skyfarebackend.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.example.skyfarebackend.repository.UserRepository;

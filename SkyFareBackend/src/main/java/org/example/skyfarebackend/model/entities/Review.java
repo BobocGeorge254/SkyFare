@@ -1,4 +1,4 @@
-package org.example.skyfarebackend.model;
+package org.example.skyfarebackend.model.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,19 +10,20 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class Review {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private int rating;
+
     private String comment;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "user_profile_id")
+    private UserProfile userProfile;
 
     @ManyToOne
     @JoinColumn(name = "book_id")
     private Book book;
 }
-

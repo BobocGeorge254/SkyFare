@@ -1,7 +1,7 @@
 package org.example.skyfarebackend.controller;
 
-import org.example.skyfarebackend.model.dto.LoginRequest;
-import org.example.skyfarebackend.model.dto.RegisterRequest;
+import org.example.skyfarebackend.model.dto.auth.LoginRequest;
+import org.example.skyfarebackend.model.dto.auth.RegisterRequest;
 import org.example.skyfarebackend.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

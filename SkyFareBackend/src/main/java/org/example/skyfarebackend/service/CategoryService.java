@@ -1,7 +1,7 @@
 package org.example.skyfarebackend.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.skyfarebackend.model.Category;
+import org.example.skyfarebackend.model.entities.Category;
 import org.example.skyfarebackend.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 

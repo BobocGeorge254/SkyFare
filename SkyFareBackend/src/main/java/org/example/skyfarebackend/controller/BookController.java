@@ -1,7 +1,7 @@
 package org.example.skyfarebackend.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.skyfarebackend.model.Book;
+import org.example.skyfarebackend.model.entities.Book;
 import org.example.skyfarebackend.service.BookService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;

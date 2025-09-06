@@ -1,4 +1,4 @@
-package org.example.skyfarebackend.model;
+package org.example.skyfarebackend.model.entities;
 
 import jakarta.persistence.*;
 import lombok.*;

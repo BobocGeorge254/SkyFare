@@ -1,8 +1,8 @@
-package org.example.skyfarebackend.model;
+package org.example.skyfarebackend.model.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.List;
+
 import java.util.Set;
 
 @Entity
@@ -20,6 +20,8 @@ public class UserProfile {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    private String avatarUrl;
 
     @ManyToMany
     @JoinTable(

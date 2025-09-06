@@ -1,7 +1,7 @@
 package org.example.skyfarebackend.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.skyfarebackend.model.Author;
+import org.example.skyfarebackend.model.entities.Author;
 import org.example.skyfarebackend.repository.AuthorRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

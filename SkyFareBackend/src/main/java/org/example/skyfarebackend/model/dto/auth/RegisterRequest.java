@@ -1,4 +1,4 @@
-package org.example.skyfarebackend.model.dto;
+package org.example.skyfarebackend.model.dto.auth;
 
 public class RegisterRequest {
     public String email;

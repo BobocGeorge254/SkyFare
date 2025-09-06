@@ -1,6 +1,6 @@
 package org.example.skyfarebackend.repository;
 
-import org.example.skyfarebackend.model.Book;
+import org.example.skyfarebackend.model.entities.Book;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

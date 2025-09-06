@@ -1,6 +1,6 @@
 package org.example.skyfarebackend.repository;
 
-import org.example.skyfarebackend.model.Author;
+import org.example.skyfarebackend.model.entities.Author;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
