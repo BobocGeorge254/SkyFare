@@ -40,6 +40,33 @@ public class AuthorService {
         return authorRepository.save(author);
     }
 
+    public Author updateAuthor(Long id, String name, MultipartFile imageFile) throws IOException {
+        Author author = authorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Author not found with id " + id));
+
+        if (name != null && !name.isBlank()) {
+            author.setName(name);
+        }
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String filename = imageFile.getOriginalFilename();
+            Path uploadDir = Path.of("uploads/images");
+
+            if (!Files.exists(uploadDir)) {
+                Files.createDirectories(uploadDir);
+            }
+
+            Path filePath = uploadDir.resolve(filename);
+            Files.write(filePath, imageFile.getBytes());
+
+            String imageUrl = "http://localhost:8080/images/" + filename;
+            author.setImageUrl(imageUrl);
+        }
+
+        return authorRepository.save(author);
+    }
+
+
     public List<Author> getAllAuthors() {
         return authorRepository.findAll();
     }
@@ -48,4 +75,12 @@ public class AuthorService {
         return authorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Author not found with id " + id));
     }
+
+    public void deleteAuthor(Long id) {
+        Author author = authorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Author not found with id " + id));
+
+        authorRepository.delete(author);
+    }
+
 }

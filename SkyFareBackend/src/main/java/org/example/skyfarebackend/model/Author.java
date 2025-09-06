@@ -20,7 +20,6 @@ public class Author {
 
     private String imageUrl;
 
-    @OneToMany(mappedBy = "author")
-    @ToString.Exclude
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Book> books;
 }
