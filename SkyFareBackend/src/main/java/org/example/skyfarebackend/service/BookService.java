@@ -1,6 +1,8 @@
 package org.example.skyfarebackend.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.skyfarebackend.model.dto.author.AuthorResponse;
+import org.example.skyfarebackend.model.dto.book.BookResponse;
 import org.example.skyfarebackend.model.entities.Author;
 import org.example.skyfarebackend.model.entities.Book;
 import org.example.skyfarebackend.model.entities.Category;
@@ -26,7 +28,7 @@ public class BookService {
     private final AuthorRepository authorRepository;
     private final CategoryRepository categoryRepository;
 
-    public Book createBook(String title, Long authorId, Long categoryId, MultipartFile imageFile) throws IOException {
+    public BookResponse createBook(String title, Long authorId, Long categoryId, MultipartFile imageFile) throws IOException {
         Author author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new RuntimeException("Author not found with id " + authorId));
 
@@ -54,10 +56,11 @@ public class BookService {
                 .imageUrl(imageUrl)
                 .build();
 
-        return bookRepository.save(book);
+        Book saved = bookRepository.save(book);
+        return mapToDTO(saved);
     }
 
-    public Book updateBook(Long id, String title, Long authorId, Long categoryId, MultipartFile imageFile) throws IOException {
+    public BookResponse updateBook(Long id, String title, Long authorId, Long categoryId, MultipartFile imageFile) throws IOException {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found with id " + id));
 
@@ -92,7 +95,8 @@ public class BookService {
             book.setImageUrl(imageUrl);
         }
 
-        return bookRepository.save(book);
+        Book saved = bookRepository.save(book);
+        return mapToDTO(saved);
     }
 
     public void deleteBook(Long id) {
@@ -101,28 +105,48 @@ public class BookService {
         bookRepository.delete(book);
     }
 
-    public Book getBookById(Long id) {
-        return bookRepository.findById(id)
+    public BookResponse getBookById(Long id) {
+        Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found with id " + id));
+        return mapToDTO(book);
     }
 
-    public Page<Book> getAllBooks(int page, int size, String sortBy, String direction,
+    public Page<BookResponse> getAllBooks(int page, int size, String sortBy, String direction,
                                   Long authorId, Long categoryId) {
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
                 : Sort.by(sortBy).ascending();
 
         Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Book> books;
 
         if (authorId != null && categoryId != null) {
-            return bookRepository.findByAuthorIdAndCategoryId(authorId, categoryId, pageable);
+            books = bookRepository.findByAuthorIdAndCategoryId(authorId, categoryId, pageable);
         } else if (authorId != null) {
-            return bookRepository.findByAuthorId(authorId, pageable);
+            books =  bookRepository.findByAuthorId(authorId, pageable);
         } else if (categoryId != null) {
-            return bookRepository.findByCategoryId(categoryId, pageable);
+            books =  bookRepository.findByCategoryId(categoryId, pageable);
         } else {
-            return bookRepository.findAll(pageable);
+            books =  bookRepository.findAll(pageable);
         }
+
+        return books.map(this::mapToDTO);
     }
+
+    private BookResponse mapToDTO(Book book) {
+        AuthorResponse authorDTO = AuthorResponse.builder()
+                .id(book.getAuthor().getId())
+                .name(book.getAuthor().getName())
+                .imageUrl(book.getAuthor().getImageUrl())
+                .build();
+
+        return BookResponse.builder()
+                .id(book.getId())
+                .title(book.getTitle())
+                .imageUrl(book.getImageUrl())
+                .author(authorDTO)
+                .build();
+    }
+
 
 }

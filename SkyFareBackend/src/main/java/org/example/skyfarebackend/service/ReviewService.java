@@ -1,6 +1,10 @@
 package org.example.skyfarebackend.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.skyfarebackend.model.dto.author.AuthorResponse;
+import org.example.skyfarebackend.model.dto.book.BookResponse;
+import org.example.skyfarebackend.model.dto.user.UserResponse;
+import org.example.skyfarebackend.model.dto.userprofile.UserProfileResponse;
 import org.example.skyfarebackend.model.entities.Book;
 import org.example.skyfarebackend.model.entities.Review;
 import org.example.skyfarebackend.model.entities.UserProfile;
@@ -20,7 +24,7 @@ public class ReviewService {
     private final BookRepository bookRepository;
     private final UserProfileRepository userProfileRepository;
 
-    public Review createReview(Long bookId, Long userProfileId, int rating, String comment) {
+    public ReviewResponse createReview(Long bookId, Long userProfileId, int rating, String comment) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new RuntimeException("Book not found with id " + bookId));
 
@@ -34,18 +38,19 @@ public class ReviewService {
                 .comment(comment)
                 .build();
 
-        return reviewRepository.save(review);
+        Review saved = reviewRepository.save(review);
+        return mapToDto(saved);
     }
 
     public List<ReviewResponse> getReviewsForBook(Long bookId) {
         return reviewRepository.findByBookId(bookId).stream()
-                .map(this::mapToResponse)
+                .map(this::mapToDto)
                 .toList();
     }
 
     public List<ReviewResponse> getReviewsByUser(Long userProfileId) {
         return reviewRepository.findByUserProfileId(userProfileId).stream()
-                .map(this::mapToResponse)
+                .map(this::mapToDto)
                 .toList();
     }
 
@@ -53,13 +58,33 @@ public class ReviewService {
         reviewRepository.deleteById(id);
     }
 
-    private ReviewResponse mapToResponse(Review review) {
+    public ReviewResponse mapToDto(Review review) {
         return ReviewResponse.builder()
                 .id(review.getId())
                 .rating(review.getRating())
                 .comment(review.getComment())
-                .firstName(review.getUserProfile().getUser().getFirstName())
-                .lastName(review.getUserProfile().getUser().getLastName())
+                .userProfile(UserProfileResponse.builder()
+                        .id(review.getUserProfile().getId())
+                        .avatarUrl(review.getUserProfile().getAvatarUrl())
+                        .user(UserResponse.builder()
+                                .id(review.getUserProfile().getUser().getId())
+                                .firstName(review.getUserProfile().getUser().getFirstName())
+                                .lastName(review.getUserProfile().getUser().getLastName())
+                                .email(review.getUserProfile().getUser().getEmail())
+                                .build())
+                        .build())
+                .book(BookResponse.builder()
+                        .id(review.getBook().getId())
+                        .title(review.getBook().getTitle())
+                        .imageUrl(review.getBook().getImageUrl())
+                        .author(AuthorResponse.builder()
+                                .id(review.getBook().getAuthor().getId())
+                                .name(review.getBook().getAuthor().getName())
+                                .imageUrl(review.getBook().getAuthor().getImageUrl())
+                                .build())
+                        .build())
                 .build();
     }
+
+
 }

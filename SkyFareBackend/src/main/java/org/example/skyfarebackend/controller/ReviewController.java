@@ -17,7 +17,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping
-    public ResponseEntity<Review> createReview(
+    public ResponseEntity<ReviewResponse> createReview(
             @RequestParam Long bookId,
             @RequestParam Long userProfileId,
             @RequestParam int rating,

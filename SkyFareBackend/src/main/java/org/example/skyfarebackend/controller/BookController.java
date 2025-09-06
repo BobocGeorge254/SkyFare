@@ -1,6 +1,7 @@
 package org.example.skyfarebackend.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.skyfarebackend.model.dto.book.BookResponse;
 import org.example.skyfarebackend.model.entities.Book;
 import org.example.skyfarebackend.service.BookService;
 import org.springframework.data.domain.Page;
@@ -18,7 +19,7 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping
-    public ResponseEntity<Book> createBook(
+    public ResponseEntity<BookResponse> createBook(
             @RequestParam("title") String title,
             @RequestParam("authorId") Long authorId,
             @RequestParam("categoryId") Long categoryId,
@@ -28,7 +29,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Book> updateBook(
+    public ResponseEntity<BookResponse> updateBook(
             @PathVariable Long id,
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "authorId", required = false) Long authorId,
@@ -45,12 +46,12 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> getBookById(@PathVariable Long id) {
+    public ResponseEntity<BookResponse> getBookById(@PathVariable Long id) {
         return ResponseEntity.ok(bookService.getBookById(id));
     }
 
     @GetMapping
-    public ResponseEntity<Page<Book>> getAllBooks(
+    public ResponseEntity<Page<BookResponse>> getAllBooks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,

@@ -1,6 +1,8 @@
 package org.example.skyfarebackend.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.skyfarebackend.model.dto.book.BookResponse;
+import org.example.skyfarebackend.model.dto.userprofile.UserProfileResponse;
 import org.example.skyfarebackend.model.entities.Book;
 import org.example.skyfarebackend.model.entities.UserProfile;
 import org.example.skyfarebackend.service.WishlistService;
@@ -17,7 +19,7 @@ public class WishlistController {
     private final WishlistService wishlistService;
 
     @PostMapping("/{userProfileId}/books/{bookId}")
-    public ResponseEntity<UserProfile> addBookToWishlist(
+    public ResponseEntity<UserProfileResponse> addBookToWishlist(
             @PathVariable Long userProfileId,
             @PathVariable Long bookId
     ) {
@@ -25,7 +27,7 @@ public class WishlistController {
     }
 
     @DeleteMapping("/{userProfileId}/books/{bookId}")
-    public ResponseEntity<UserProfile> removeBookFromWishlist(
+    public ResponseEntity<UserProfileResponse> removeBookFromWishlist(
             @PathVariable Long userProfileId,
             @PathVariable Long bookId
     ) {
@@ -33,7 +35,7 @@ public class WishlistController {
     }
 
     @GetMapping("/{userProfileId}/books")
-    public ResponseEntity<Set<Book>> getWishlistBooks(@PathVariable Long userProfileId) {
+    public ResponseEntity<Set<BookResponse>> getWishlistBooks(@PathVariable Long userProfileId) {
         return ResponseEntity.ok(wishlistService.getWishlistBooks(userProfileId));
     }
 

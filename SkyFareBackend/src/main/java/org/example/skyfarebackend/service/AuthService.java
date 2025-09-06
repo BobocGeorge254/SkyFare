@@ -2,17 +2,22 @@ package org.example.skyfarebackend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.skyfarebackend.model.entities.User;
+import org.example.skyfarebackend.model.entities.UserProfile;
+import org.example.skyfarebackend.repository.UserProfileRepository;
 import org.example.skyfarebackend.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final UserProfileRepository userProfileRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -28,7 +33,15 @@ public class AuthService {
                         .firstName(firstName)
                         .lastName(lastName)
                         .build();
+
+        UserProfile profile = UserProfile.builder()
+                        .user(user)
+                        .avatarUrl(null)
+                        .wishlist(new HashSet<>())
+                        .build();
+
         userRepository.save(user);
+        userProfileRepository.save(profile);
     }
 
     public String login(String email, String password) {
