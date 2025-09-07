@@ -5,14 +5,18 @@ import SearchBar from "../components/SearchBar";
 import { useAuth } from "../context/AuthContext";
 import { fetchAuthors } from "../services/authorsService";
 import { fetchCategories } from "../services/categoriesService";
+import { fetchReviewsForBook, createReview, fetchReviewsByUser, deleteReview} from "../services/reviewService";
 
 export default function BooksPage() {
-  const { token } = useAuth();
+  const { token, userProfileId} = useAuth();
 
   const [books, setBooks] = useState([]);
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [authors, setAuthors] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [expandedBookId, setExpandedBookId] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [newReview, setNewReview] = useState({ rating: 5, comment: "" });
 
   const [newBook, setNewBook] = useState({
     title: "",
@@ -36,6 +40,7 @@ export default function BooksPage() {
       const res = await axios.get("http://localhost:8080/api/books", {
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log("carti:", res.data);
       setBooks(res.data.content || []);
       setFilteredBooks(res.data.content || []);
     } catch (err) {
@@ -151,12 +156,39 @@ export default function BooksPage() {
     }
   };
 
+    const handleToggleReviews = async (bookId) => {
+    if (expandedBookId === bookId) {
+      setExpandedBookId(null);
+      setReviews([]);
+    } else {
+      try {
+        const data = await fetchReviewsForBook(token, bookId);
+        setReviews(data);
+        setExpandedBookId(bookId);
+      } catch (err) {
+        console.error("Error fetching reviews:", err);
+      }
+    }
+  };
+
+  const handleAddReview = async (bookId) => {
+    try {
+      await createReview(token, bookId, userProfileId, newReview.rating, newReview.comment);
+      const data = await fetchReviewsForBook(token, bookId);
+      setReviews(data);
+      setNewReview({ rating: 5, comment: "" });
+    } catch (err) {
+      console.error("Error adding review:", err);
+    }
+  };
+
   return (
-    <div className={styles.pageContainer}>
-      <h2 className={styles.pageTitle}>Books</h2>
+  <div className={styles.pageContainer}>
+    <h2 className={styles.pageTitle}>Books</h2>
 
-      <SearchBar placeholder="Search books..." onSearch={handleSearch} />
+    <SearchBar placeholder="Search books..." onSearch={handleSearch} />
 
+    {userProfileId === null && (
       <form
         onSubmit={editingBook ? handleUpdateBook : handleCreateBook}
         className={styles.formContainer}
@@ -231,31 +263,73 @@ export default function BooksPage() {
           </button>
         )}
       </form>
+    )}
 
-      <ul className={styles.list}>
-        {filteredBooks.map((book) => (
-          <li key={book.id} className={styles.listItem}>
+    <ul className={styles.list}>
+      {filteredBooks.map((book) => (
+        <li key={book.id} className={styles.listItem}>
+          <div onClick={() => handleToggleReviews(book.id)} className={styles.bookHeader}>
             <span>
               {book.title} - {book.author?.name || "Unknown"} (
               {book.category?.name || "Uncategorized"})
             </span>
-            <div className={styles.actions}>
-              <button
-                onClick={() => handleEditBook(book)}
-                className={styles.editButton}
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDeleteBook(book.id)}
-                className={styles.deleteButton}
-              >
-                Delete
-              </button>
+            {userProfileId === null && (
+              <div className={styles.actions}>
+                <button onClick={() => handleEditBook(book)} className={styles.editButton}>
+                  Edit
+                </button>
+                <button onClick={() => handleDeleteBook(book.id)} className={styles.deleteButton}>
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
+
+          {expandedBookId === book.id && (
+            <div className={styles.reviewsContainer}>
+              <h4>Reviews</h4>
+              <ul className={styles.reviewList}>
+                {reviews.length > 0 ? (
+                  reviews.map((rev) => (
+                    <li key={rev.id} className={styles.reviewItem}>
+                      <strong>Rating:</strong> {rev.rating}/10
+                      <p>{rev.comment}</p>
+                    </li>
+                  ))
+                ) : (
+                  <p>No reviews yet.</p>
+                )}
+              </ul>
+
+              {userProfileId && (
+                <div className={styles.addReview}>
+                  <textarea
+                    value={newReview.comment}
+                    onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+                    placeholder="Write your review..."
+                    className={styles.inputField}
+                  />
+                  <select
+                    value={newReview.rating}
+                    onChange={(e) => setNewReview({ ...newReview, rating: e.target.value })}
+                    className={styles.inputField}
+                  >
+                    {[...Array(10)].map((_, i) => (
+                      <option key={i + 1} value={i + 1}>
+                        {i + 1}
+                      </option>
+                    ))}
+                  </select>
+                  <button onClick={() => handleAddReview(book.id)} className={styles.submitButton}>
+                    Send
+                  </button>
+                </div>
+              )}
             </div>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+          )}
+        </li>
+      ))}
+    </ul>
+  </div>
+);
 }

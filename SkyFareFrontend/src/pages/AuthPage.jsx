@@ -54,8 +54,9 @@ export default function AuthPage() {
     try {
       if (mode === "login") {
         const res = await loginUser({ email: formData.email, password: formData.password });
+        console.log("res", res);
         if (res.token) {
-          login(res.token);
+          login(res.token, res.userProfileId);
           navigate("/dashboard");
         } else {
           setError(res.error || "Login failed");

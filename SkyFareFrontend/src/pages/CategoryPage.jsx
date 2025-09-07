@@ -9,7 +9,7 @@ import {
 } from "../services/categoriesService";
 
 export default function CategoryPage() {
-  const { token } = useAuth();
+  const { token, userProfileId } = useAuth();
 
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
@@ -69,9 +69,10 @@ export default function CategoryPage() {
   };
 
   return (
-    <div className={styles.pageContainer}>
-      <h2 className={styles.pageTitle}>Categories</h2>
+  <div className={styles.pageContainer}>
+    <h2 className={styles.pageTitle}>Categories</h2>
 
+    {userProfileId === null && (
       <div className={styles.formContainer}>
         <input
           type="text"
@@ -88,12 +89,14 @@ export default function CategoryPage() {
           Add Category
         </button>
       </div>
+    )}
 
-      <ul className={styles.list}>
-        {Array.isArray(categories) &&
-          categories.map((cat) => (
-            <li key={cat.id} className={styles.listItem}>
-              {editingCategory?.id === cat.id ? (
+    <ul className={styles.list}>
+      {Array.isArray(categories) &&
+        categories.map((cat) => (
+          <li key={cat.id} className={styles.listItem}>
+            {editingCategory?.id === cat.id ? (
+              userProfileId === null ? (
                 <>
                   <input
                     type="text"
@@ -115,8 +118,12 @@ export default function CategoryPage() {
                   </button>
                 </>
               ) : (
-                <>
-                  <span>{cat.name}</span>
+                <span>{cat.name}</span>
+              )
+            ) : (
+              <>
+                <span>{cat.name}</span>
+                {userProfileId === null && (
                   <div className={styles.actions}>
                     <button
                       onClick={() => handleStartEditCategory(cat)}
@@ -131,11 +138,12 @@ export default function CategoryPage() {
                       Delete
                     </button>
                   </div>
-                </>
-              )}
-            </li>
-          ))}
-      </ul>
-    </div>
-  );
+                )}
+              </>
+            )}
+          </li>
+        ))}
+    </ul>
+  </div>
+);
 }
