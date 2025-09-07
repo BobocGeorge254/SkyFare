@@ -1,6 +1,7 @@
 package org.example.skyfarebackend.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.skyfarebackend.model.dto.auth.LoginResponse;
 import org.example.skyfarebackend.model.entities.User;
 import org.example.skyfarebackend.model.entities.UserProfile;
 import org.example.skyfarebackend.model.enums.Role;
@@ -46,7 +47,7 @@ public class AuthService {
         userProfileRepository.save(profile);
     }
 
-    public String login(String email, String password) {
+    public LoginResponse login(String email, String password) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password)
         );
@@ -54,6 +55,19 @@ public class AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return jwtService.generateToken(user);
+        String token = jwtService.generateToken(user);
+
+        Long userProfileId = null;
+        if (user.getRole() == Role.USER) {
+            UserProfile userProfile = userProfileRepository.findByUser(user)
+                    .orElseThrow(() -> new RuntimeException("User profile not found"));
+            userProfileId = userProfile.getId();
+        }
+
+        return LoginResponse.builder()
+                .token(token)
+                .userProfileId(userProfileId)
+                .build();
     }
+
 }

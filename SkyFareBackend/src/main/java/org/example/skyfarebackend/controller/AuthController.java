@@ -3,6 +3,7 @@ package org.example.skyfarebackend.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.skyfarebackend.model.dto.auth.LoginRequest;
+import org.example.skyfarebackend.model.dto.auth.LoginResponse;
 import org.example.skyfarebackend.model.dto.auth.RegisterRequest;
 import org.example.skyfarebackend.service.AuthService;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +24,10 @@ public class AuthController {
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
         try {
             authService.register(
-                    request.email,
-                    request.password,
-                    request.firstName,
-                    request.lastName
+                    request.getEmail(),
+                    request.getPassword(),
+                    request.getFirstName(),
+                    request.getLastName()
             );
             return ResponseEntity.ok(Map.of("message", "User registered successfully"));
         } catch (RuntimeException e) {
@@ -37,10 +38,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         try {
-            String token = authService.login(request.email, request.password);
-            return ResponseEntity.ok(Map.of("token", token));
+            LoginResponse response = authService.login(request.getEmail(), request.getPassword());
+            return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
+
 }
