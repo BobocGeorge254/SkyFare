@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.skyfarebackend.model.dto.author.AuthorResponse;
+import org.example.skyfarebackend.model.dto.category.CategoryResponse;
 
 @Data
 @NoArgsConstructor
@@ -15,4 +16,5 @@ public class BookResponse {
     private String title;
     private String imageUrl;
     private AuthorResponse author;
+    private CategoryResponse category;
 }

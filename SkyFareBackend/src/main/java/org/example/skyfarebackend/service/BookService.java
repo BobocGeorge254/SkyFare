@@ -3,6 +3,7 @@ package org.example.skyfarebackend.service;
 import lombok.RequiredArgsConstructor;
 import org.example.skyfarebackend.model.dto.author.AuthorResponse;
 import org.example.skyfarebackend.model.dto.book.BookResponse;
+import org.example.skyfarebackend.model.dto.category.CategoryResponse;
 import org.example.skyfarebackend.model.entities.Author;
 import org.example.skyfarebackend.model.entities.Book;
 import org.example.skyfarebackend.model.entities.Category;
@@ -140,11 +141,17 @@ public class BookService {
                 .imageUrl(book.getAuthor().getImageUrl())
                 .build();
 
+        CategoryResponse categoryDTO = CategoryResponse.builder()
+                .id(book.getCategory().getId())
+                .name(book.getCategory().getName())
+                .build();
+
         return BookResponse.builder()
                 .id(book.getId())
                 .title(book.getTitle())
                 .imageUrl(book.getImageUrl())
                 .author(authorDTO)
+                .category(categoryDTO)
                 .build();
     }
 
