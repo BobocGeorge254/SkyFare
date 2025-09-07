@@ -1,6 +1,7 @@
 package org.example.skyfarebackend.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.skyfarebackend.model.dto.author.AuthorResponse;
 import org.example.skyfarebackend.model.entities.Author;
 import org.example.skyfarebackend.repository.AuthorRepository;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class AuthorService {
 
     private final AuthorRepository authorRepository;
 
-    public Author createAuthor(String name, MultipartFile imageFile) throws IOException {
+    public AuthorResponse createAuthor(String name, MultipartFile imageFile) throws IOException {
         String imageUrl = null;
 
         if (imageFile != null && !imageFile.isEmpty()) {
@@ -37,10 +38,11 @@ public class AuthorService {
                 .name(name)
                 .imageUrl(imageUrl)
                 .build();
-        return authorRepository.save(author);
+
+        return mapToDTO(authorRepository.save(author));
     }
 
-    public Author updateAuthor(Long id, String name, MultipartFile imageFile) throws IOException {
+    public AuthorResponse updateAuthor(Long id, String name, MultipartFile imageFile) throws IOException {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Author not found with id " + id));
 
@@ -63,24 +65,36 @@ public class AuthorService {
             author.setImageUrl(imageUrl);
         }
 
-        return authorRepository.save(author);
+        return mapToDTO(authorRepository.save(author));
     }
 
-
-    public List<Author> getAllAuthors() {
-        return authorRepository.findAll();
+    public List<AuthorResponse> getAllAuthors() {
+        return authorRepository.findAll()
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 
-    public Author getAuthorById(Long id) {
-        return authorRepository.findById(id)
+    public AuthorResponse getAuthorById(Long id) {
+        Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Author not found with id " + id));
+        return mapToDTO(author);
     }
 
     public void deleteAuthor(Long id) {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Author not found with id " + id));
-
         authorRepository.delete(author);
+    }
+
+
+
+    private AuthorResponse mapToDTO(Author author) {
+        return AuthorResponse.builder()
+                .id(author.getId())
+                .name(author.getName())
+                .imageUrl(author.getImageUrl())
+                .build();
     }
 
 }

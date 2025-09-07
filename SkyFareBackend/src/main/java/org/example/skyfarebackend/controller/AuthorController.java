@@ -3,6 +3,7 @@ package org.example.skyfarebackend.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.skyfarebackend.model.dto.author.AuthorCreate;
+import org.example.skyfarebackend.model.dto.author.AuthorResponse;
 import org.example.skyfarebackend.model.dto.author.AuthorUpdate;
 import org.example.skyfarebackend.model.entities.Author;
 import org.example.skyfarebackend.service.AuthorService;
@@ -22,23 +23,23 @@ public class AuthorController {
     private final AuthorService authorService;
 
     @PostMapping
-    public ResponseEntity<Author> createAuthor(@Valid AuthorCreate request) throws IOException {
+    public ResponseEntity<AuthorResponse> createAuthor(@Valid AuthorCreate request) throws IOException {
         return ResponseEntity.ok(authorService.createAuthor(request.getName(), request.getImage()));
     }
 
 
     @GetMapping
-    public ResponseEntity<List<Author>> getAllAuthors() {
+    public ResponseEntity<List<AuthorResponse>> getAllAuthors() {
         return ResponseEntity.ok(authorService.getAllAuthors());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Author> getAuthorById(@PathVariable Long id) {
+    public ResponseEntity<AuthorResponse> getAuthorById(@PathVariable Long id) {
         return ResponseEntity.ok(authorService.getAuthorById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Author> updateAuthor(
+    public ResponseEntity<AuthorResponse> updateAuthor(
             @PathVariable Long id,
             @Valid AuthorUpdate request
     ) throws IOException {

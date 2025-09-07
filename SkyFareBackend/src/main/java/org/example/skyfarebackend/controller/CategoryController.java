@@ -3,6 +3,7 @@ package org.example.skyfarebackend.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.skyfarebackend.model.dto.category.CategoryCreate;
+import org.example.skyfarebackend.model.dto.category.CategoryResponse;
 import org.example.skyfarebackend.model.dto.category.CategoryUpdate;
 import org.example.skyfarebackend.model.entities.Category;
 import org.example.skyfarebackend.service.CategoryService;
@@ -21,22 +22,22 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping
-    public ResponseEntity<Category> createCategory(@Valid CategoryCreate request) {
+    public ResponseEntity<CategoryResponse> createCategory(@Valid CategoryCreate request) {
         return ResponseEntity.ok(categoryService.createCategory(request.getName()));
     }
 
     @GetMapping
-    public ResponseEntity<List<Category>> getAllCategories() {
+    public ResponseEntity<List<CategoryResponse>> getAllCategories() {
         return ResponseEntity.ok(categoryService.getAllCategories());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
+    public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable Long id) {
         return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(
+    public ResponseEntity<CategoryResponse> updateCategory(
             @PathVariable Long id,
             @Valid CategoryUpdate request
             ) {
