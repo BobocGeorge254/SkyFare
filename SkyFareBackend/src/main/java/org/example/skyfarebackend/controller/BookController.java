@@ -1,16 +1,21 @@
 package org.example.skyfarebackend.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.skyfarebackend.model.dto.book.BookCreate;
 import org.example.skyfarebackend.model.dto.book.BookResponse;
+import org.example.skyfarebackend.model.dto.book.BookUpdate;
 import org.example.skyfarebackend.model.entities.Book;
 import org.example.skyfarebackend.service.BookService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@Validated
 @RestController
 @RequestMapping("/api/books")
 @RequiredArgsConstructor
@@ -19,24 +24,13 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping
-    public ResponseEntity<BookResponse> createBook(
-            @RequestParam("title") String title,
-            @RequestParam("authorId") Long authorId,
-            @RequestParam("categoryId") Long categoryId,
-            @RequestParam(value = "image", required = false) MultipartFile imageFile
-    ) throws IOException {
-        return ResponseEntity.ok(bookService.createBook(title, authorId, categoryId, imageFile));
+    public ResponseEntity<BookResponse> createBook(@Valid BookCreate request) throws IOException {
+        return ResponseEntity.ok(bookService.createBook(request.getTitle(), request.getAuthorId(), request.getCategoryId(), request.getImage()));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookResponse> updateBook(
-            @PathVariable Long id,
-            @RequestParam(value = "title", required = false) String title,
-            @RequestParam(value = "authorId", required = false) Long authorId,
-            @RequestParam(value = "categoryId", required = false) Long categoryId,
-            @RequestParam(value = "image", required = false) MultipartFile imageFile
-    ) throws IOException {
-        return ResponseEntity.ok(bookService.updateBook(id, title, authorId, categoryId, imageFile));
+    public ResponseEntity<BookResponse> updateBook(@PathVariable Long id, @Valid BookUpdate request) throws IOException {
+        return ResponseEntity.ok(bookService.updateBook(id, request.getTitle(), request.getAuthorId(), request.getCategoryId(), request.getImage()));
     }
 
     @DeleteMapping("/{id}")

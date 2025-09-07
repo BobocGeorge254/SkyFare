@@ -1,13 +1,18 @@
 package org.example.skyfarebackend.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.skyfarebackend.model.dto.category.CategoryCreate;
+import org.example.skyfarebackend.model.dto.category.CategoryUpdate;
 import org.example.skyfarebackend.model.entities.Category;
 import org.example.skyfarebackend.service.CategoryService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
@@ -16,8 +21,8 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestParam("name") String name) {
-        return ResponseEntity.ok(categoryService.createCategory(name));
+    public ResponseEntity<Category> createCategory(@Valid CategoryCreate request) {
+        return ResponseEntity.ok(categoryService.createCategory(request.getName()));
     }
 
     @GetMapping
@@ -33,9 +38,9 @@ public class CategoryController {
     @PutMapping("/{id}")
     public ResponseEntity<Category> updateCategory(
             @PathVariable Long id,
-            @RequestParam(value = "name", required = false) String name
-    ) {
-        return ResponseEntity.ok(categoryService.updateCategory(id, name));
+            @Valid CategoryUpdate request
+            ) {
+        return ResponseEntity.ok(categoryService.updateCategory(id, request.getName()));
     }
 
     @DeleteMapping("/{id}")
