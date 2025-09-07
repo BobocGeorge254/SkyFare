@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.example.skyfarebackend.model.enums.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -27,6 +28,9 @@ public class User implements UserDetails {
     @NotBlank
     private String email;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @NotBlank
     private String password;
 
@@ -38,7 +42,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of((GrantedAuthority) () -> "ROLE_" + role.name());
     }
 
     @Override

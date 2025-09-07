@@ -3,6 +3,7 @@ package org.example.skyfarebackend.service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.example.skyfarebackend.model.entities.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -34,8 +35,11 @@ public class JwtService {
     }
 
     private String buildToken(UserDetails userDetails, long expiration) {
+        User user = (User) userDetails;
+
         return Jwts.builder()
                 .subject(userDetails.getUsername())
+                .claim("role", user.getRole().name())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey())

@@ -3,6 +3,7 @@ package org.example.skyfarebackend.service;
 import lombok.RequiredArgsConstructor;
 import org.example.skyfarebackend.model.entities.User;
 import org.example.skyfarebackend.model.entities.UserProfile;
+import org.example.skyfarebackend.model.enums.Role;
 import org.example.skyfarebackend.repository.UserProfileRepository;
 import org.example.skyfarebackend.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,6 +33,7 @@ public class AuthService {
                         .password(passwordEncoder.encode(password))
                         .firstName(firstName)
                         .lastName(lastName)
+                        .role(Role.USER)
                         .build();
 
         UserProfile profile = UserProfile.builder()

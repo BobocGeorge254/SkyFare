@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.example.skyfarebackend.model.dto.author.AuthorResponse;
 import org.example.skyfarebackend.model.dto.book.BookResponse;
 import org.example.skyfarebackend.model.dto.userprofile.UserProfileResponse;
+import org.example.skyfarebackend.model.entities.User;
 import org.example.skyfarebackend.model.entities.UserProfile;
 import org.example.skyfarebackend.model.entities.Book;
 import org.example.skyfarebackend.repository.BookRepository;
 import org.example.skyfarebackend.repository.UserProfileRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -21,8 +23,16 @@ public class WishlistService {
     private final BookRepository bookRepository;
 
     public UserProfileResponse addBookToWishlist(Long userProfileId, Long bookId) {
+        Long currentUserId = ((User) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal()).getId();
+
         UserProfile userProfile = userProfileRepository.findById(userProfileId)
                 .orElseThrow(() -> new RuntimeException("UserProfile not found with id " + userProfileId));
+
+        if (!userProfile.getUser().getId().equals(currentUserId)) {
+            throw new RuntimeException("You cannot modify someone else's wishlist");
+        }
 
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new RuntimeException("Book not found with id " + bookId));
@@ -34,8 +44,16 @@ public class WishlistService {
     }
 
     public UserProfileResponse removeBookFromWishlist(Long userProfileId, Long bookId) {
+        Long currentUserId = ((User) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal()).getId();
+
         UserProfile userProfile = userProfileRepository.findById(userProfileId)
                 .orElseThrow(() -> new RuntimeException("UserProfile not found with id " + userProfileId));
+
+        if (!userProfile.getUser().getId().equals(currentUserId)) {
+            throw new RuntimeException("You cannot modify someone else's wishlist");
+        }
 
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new RuntimeException("Book not found with id " + bookId));

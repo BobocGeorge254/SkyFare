@@ -5,6 +5,7 @@ import org.example.skyfarebackend.repository.UserRepository;
 import org.example.skyfarebackend.service.JwtService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -32,8 +33,33 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**").permitAll()
-                        .anyRequest().authenticated()
+                        // Public
+                        .requestMatchers("/api/auth/**").permitAll()
+
+                        // Admin-only: manage books
+                        .requestMatchers(HttpMethod.POST, "/api/books/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/books/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ADMIN")
+
+                        // Admin-only: manage authors
+                        .requestMatchers(HttpMethod.POST, "/api/authors/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/authors/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/authors/**").hasRole("ADMIN")
+
+                        // Admin-only: manage categories
+                        .requestMatchers(HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/categories/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasRole("ADMIN")
+
+                        // Users
+                        .requestMatchers(HttpMethod.GET, "/api/books/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/authors/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/categories/**").authenticated()
+                        .requestMatchers("/api/wishlist/**").authenticated()
+                        .requestMatchers("/api/reviews/**").authenticated()
+
+                        // Everything else allowed
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -43,6 +69,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 
     @Bean
     public JwtAuthFilter jwtAuthFilter() {
