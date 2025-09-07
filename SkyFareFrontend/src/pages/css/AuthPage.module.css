@@ -1,0 +1,120 @@
+.authPage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #74ebd5, #acb6e5);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.authContainer {
+  background-color: #ffffff;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+/* Title */
+.authTitle {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 25px;
+  color: #333333;
+}
+
+/* Error message */
+.authError {
+  background-color: #ffcccc;
+  color: #cc0000;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+/* Form */
+.authForm {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Input fields */
+.inputField {
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.inputField:focus {
+  outline: none;
+  border-color: #6c63ff;
+  box-shadow: 0 0 5px rgba(108, 99, 255, 0.5);
+}
+
+/* Submit button */
+.submitButton {
+  background-color: #6c63ff;
+  color: white;
+  padding: 12px 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 5px;
+}
+
+.submitButton:hover {
+  background-color: #5952d4;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Toggle text */
+.toggleText {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #555555;
+}
+
+/* Toggle button */
+.toggleButton {
+  background: none;
+  border: none;
+  color: #6c63ff;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 5px;
+  transition: all 0.3s ease;
+}
+
+.toggleButton:hover {
+  text-decoration: underline;
+  color: #5952d4;
+}
+
+/* Responsive for small screens */
+@media (max-width: 480px) {
+  .authContainer {
+    padding: 30px 20px;
+  }
+
+  .authTitle {
+    font-size: 24px;
+  }
+
+  .inputField {
+    font-size: 14px;
+  }
+
+  .submitButton {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+}

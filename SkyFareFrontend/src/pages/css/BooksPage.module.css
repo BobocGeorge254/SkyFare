@@ -1,0 +1,181 @@
+/* Container general */
+.pageContainer {
+  padding: 40px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+/* Titlu pagină */
+.pageTitle {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #444;
+}
+
+/* Form container */
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 30px;
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Input fields & select */
+.inputField {
+  padding: 10px 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.inputField:focus {
+  outline: none;
+  border-color: #6c63ff;
+  box-shadow: 0 0 5px rgba(108, 99, 255, 0.3);
+}
+
+/* Submit & action buttons */
+.submitButton,
+.addButton,
+.saveButton,
+.cancelButton,
+.editButton,
+.deleteButton {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.submitButton {
+  background-color: #6c63ff;
+  color: white;
+}
+
+.submitButton:hover {
+  background-color: #5952d4;
+}
+
+.addButton {
+  background-color: #4caf50;
+  color: white;
+  margin-left: 8px;
+}
+
+.addButton:hover {
+  background-color: #3e8e41;
+}
+
+.saveButton {
+  background-color: #2196f3;
+  color: white;
+  margin-left: 8px;
+}
+
+.saveButton:hover {
+  background-color: #1976d2;
+}
+
+.cancelButton {
+  background-color: #f44336;
+  color: white;
+  margin-left: 8px;
+}
+
+.cancelButton:hover {
+  background-color: #d32f2f;
+}
+
+.editButton {
+  background-color: #ffc107;
+  color: white;
+  margin-right: 5px;
+}
+
+.editButton:hover {
+  background-color: #e0a800;
+}
+
+.deleteButton {
+  background-color: #f44336;
+  color: white;
+}
+
+.deleteButton:hover {
+  background-color: #d32f2f;
+}
+
+/* Category management form */
+.categoryManagement {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+/* Lists (books / categories) */
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.listItem {
+  background-color: #fff;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  padding: 12px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.listItem:hover {
+  background-color: #f0f0ff;
+}
+
+/* Actions container for each list item */
+.actions {
+  display: flex;
+  align-items: center;
+}
+
+/* Book/Author info inside list */
+.authorName,
+.bookTitle {
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .formContainer {
+    padding: 15px;
+  }
+
+  .listItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .actions {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 5px;
+  }
+}

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login as loginUser, register as registerUser } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
-import '../index.css';
+import styles from './css/AuthPage.module.css';
 
 export default function AuthPage() {
   const [mode, setMode] = useState("login");
@@ -74,11 +74,11 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-container">
-        <h2 className="auth-title">{mode === "login" ? "Login" : "Register"}</h2>
-        {error && <div className="auth-error">{error}</div>}
-        <form onSubmit={handleSubmit} className="auth-form">
+    <div className={styles.authPage}>
+      <div className={styles.authContainer}>
+        <h2 className={styles.authTitle}>{mode === "login" ? "Login" : "Register"}</h2>
+        {error && <div className={styles.authError}>{error}</div>}
+        <form onSubmit={handleSubmit} className={styles.authForm}>
           {mode === "register" && (
             <>
               <input
@@ -87,7 +87,7 @@ export default function AuthPage() {
                 placeholder="First Name"
                 value={formData.firstName}
                 onChange={handleChange}
-                className="input-field"
+                className={styles.inputField}
               />
               <input
                 type="text"
@@ -95,7 +95,7 @@ export default function AuthPage() {
                 placeholder="Last Name"
                 value={formData.lastName}
                 onChange={handleChange}
-                className="input-field"
+                className={styles.inputField}
               />
             </>
           )}
@@ -105,7 +105,7 @@ export default function AuthPage() {
             placeholder="Email"
             value={formData.email}
             onChange={handleChange}
-            className="input-field"
+            className={styles.inputField}
           />
           <input
             type="password"
@@ -113,17 +113,17 @@ export default function AuthPage() {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            className="input-field"
+            className={styles.inputField}
           />
-          <button type="submit" className="submit-button">
+          <button type="submit" className={styles.submitButton}>
             {mode === "login" ? "Login" : "Register"}
           </button>
         </form>
-        <p className="toggle-text">
+        <p className={styles.toggleText}>
           {mode === "login" ? "Don't have an account?" : "Already have an account?"}{" "}
           <button
             onClick={() => setMode(mode === "login" ? "register" : "login")}
-            className="toggle-button"
+            className={styles.toggleButton}
           >
             {mode === "login" ? "Register" : "Login"}
           </button>
