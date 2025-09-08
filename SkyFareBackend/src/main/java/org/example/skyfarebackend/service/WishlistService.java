@@ -3,6 +3,7 @@ package org.example.skyfarebackend.service;
 import lombok.RequiredArgsConstructor;
 import org.example.skyfarebackend.model.dto.author.AuthorResponse;
 import org.example.skyfarebackend.model.dto.book.BookResponse;
+import org.example.skyfarebackend.model.dto.category.CategoryResponse;
 import org.example.skyfarebackend.model.dto.userprofile.UserProfileResponse;
 import org.example.skyfarebackend.model.entities.User;
 import org.example.skyfarebackend.model.entities.UserProfile;
@@ -77,6 +78,10 @@ public class WishlistService {
                                 .id(b.getAuthor().getId())
                                 .name(b.getAuthor().getName())
                                 .imageUrl(b.getAuthor().getImageUrl())
+                                .build())
+                        .category(CategoryResponse.builder()
+                                .id(b.getCategory().getId())
+                                .name(b.getCategory().getName())
                                 .build())
                         .build())
                 .collect(Collectors.toSet());

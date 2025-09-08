@@ -54,9 +54,14 @@ public class SecurityConfig {
                         // Users
                         .requestMatchers(HttpMethod.GET, "/api/books/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/authors/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/categories/**").authenticated()
-                        .requestMatchers("/api/wishlist/**").authenticated()
-                        .requestMatchers("/api/reviews/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/wishlist/**").authenticated()
+                        .requestMatchers(HttpMethod.POST,"/api/wishlist/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT,"/api/wishlist/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE,"/api/wishlist/**").authenticated()
+                        .requestMatchers(HttpMethod.GET,"/api/reviews/**").authenticated()
+                        .requestMatchers(HttpMethod.POST,"/api/reviews/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT,"/api/reviews/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE,"/api/reviews/**").authenticated()
 
                         // Everything else allowed
                         .anyRequest().permitAll()

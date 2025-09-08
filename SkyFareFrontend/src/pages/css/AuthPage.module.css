@@ -17,7 +17,6 @@
   text-align: center;
 }
 
-/* Title */
 .authTitle {
   font-size: 28px;
   font-weight: 600;
@@ -25,7 +24,6 @@
   color: #333333;
 }
 
-/* Error message */
 .authError {
   background-color: #ffcccc;
   color: #cc0000;
@@ -35,13 +33,11 @@
   font-size: 14px;
 }
 
-/* Form */
 .authForm {
   display: flex;
   flex-direction: column;
 }
 
-/* Input fields */
 .inputField {
   padding: 12px 15px;
   margin-bottom: 15px;
@@ -57,7 +53,6 @@
   box-shadow: 0 0 5px rgba(108, 99, 255, 0.5);
 }
 
-/* Submit button */
 .submitButton {
   background-color: #6c63ff;
   color: white;
@@ -76,14 +71,12 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-/* Toggle text */
 .toggleText {
   margin-top: 20px;
   font-size: 14px;
   color: #555555;
 }
 
-/* Toggle button */
 .toggleButton {
   background: none;
   border: none;
@@ -99,7 +92,6 @@
   color: #5952d4;
 }
 
-/* Responsive for small screens */
 @media (max-width: 480px) {
   .authContainer {
     padding: 30px 20px;

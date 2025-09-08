@@ -17,10 +17,19 @@ export async function fetchReviewsByUser(token, userProfileId) {
 }
 
 export async function createReview(token, bookId, userProfileId, rating, comment) {
-  const payload = { bookId, userProfileId, rating, comment };
-  const res = await axios.post(BASE_URL, payload, {
-    headers: { Authorization: `Bearer ${token}` },
+  const formData = new FormData();
+  formData.append("bookId", bookId);
+  formData.append("userProfileId", userProfileId);
+  formData.append("rating", rating);
+  formData.append("comment", comment);
+
+  const res = await axios.post(BASE_URL, formData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
+    },
   });
+
   return res.data;
 }
 

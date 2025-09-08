@@ -1,22 +1,27 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import styles from "./css/BooksPage.module.css";
 import SearchBar from "../components/SearchBar";
 import { useAuth } from "../context/AuthContext";
 import { fetchAuthors } from "../services/authorsService";
 import { fetchCategories } from "../services/categoriesService";
-import { fetchReviewsForBook, createReview, fetchReviewsByUser, deleteReview} from "../services/reviewService";
+import { fetchReviewsForBook, createReview } from "../services/reviewService";
+import { addBookToWishlist } from "../services/wishlistService";
+import { fetchBooks, createBook, updateBook, deleteBook } from "../services/booksService";
+import { useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
+
 
 export default function BooksPage() {
-  const { token, userProfileId} = useAuth();
+  const { token, userProfileId } = useAuth();
 
   const [books, setBooks] = useState([]);
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [authors, setAuthors] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [expandedBookId, setExpandedBookId] = useState(null);
-  const [reviews, setReviews] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedAuthor, setSelectedAuthor] = useState("all");
   const [newReview, setNewReview] = useState({ rating: 5, comment: "" });
+  const navigate = useNavigate();
 
   const [newBook, setNewBook] = useState({
     title: "",
@@ -26,23 +31,25 @@ export default function BooksPage() {
   });
 
   const [editingBook, setEditingBook] = useState(null);
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     if (token) {
-      fetchBooks();
+      const authorParam = searchParams.get("author") || "all";
+      const categoryParam = searchParams.get("category") || "all";
+      setSelectedAuthor(authorParam);
+      setSelectedCategory(categoryParam);
+      loadBooks(authorParam, categoryParam);
       loadAuthors();
       loadCategories();
     }
-  }, [token]);
+  }, [token, searchParams]);
 
-  const fetchBooks = async () => {
+  const loadBooks = async (author = selectedAuthor, category = selectedCategory) => {
     try {
-      const res = await axios.get("http://localhost:8080/api/books", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      console.log("carti:", res.data);
-      setBooks(res.data.content || []);
-      setFilteredBooks(res.data.content || []);
+      const data = await fetchBooks(token, { authorId: author, categoryId: category });
+      setBooks(data);
+      setFilteredBooks(data);
     } catch (err) {
       console.error("Error fetching books:", err);
     }
@@ -66,13 +73,29 @@ export default function BooksPage() {
     }
   };
 
-  const handleSearch = (query) => {
-    setFilteredBooks(
-      books.filter((book) =>
-        book.title.toLowerCase().includes(query.toLowerCase())
-      )
+const handleSearch = (query) => {
+  let filtered = books;
+  if (query) {
+    filtered = filtered.filter((book) =>
+      book.title.toLowerCase().includes(query.toLowerCase())
     );
+  }
+  setFilteredBooks(filtered);
+};
+
+
+  const handleCategoryChange = async (e) => {
+    const category = e.target.value;
+    setSelectedCategory(category);
+    loadBooks(selectedAuthor, category);
   };
+
+  const handleAuthorChange = async (e) => {
+    const author = e.target.value;
+    setSelectedAuthor(author);
+    loadBooks(author, selectedCategory);
+  };
+
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
@@ -85,20 +108,8 @@ export default function BooksPage() {
   const handleCreateBook = async (e) => {
     e.preventDefault();
     try {
-      const formData = new FormData();
-      formData.append("title", newBook.title);
-      formData.append("authorId", newBook.authorId);
-      formData.append("categoryId", newBook.categoryId);
-      if (newBook.image) formData.append("image", newBook.image);
-
-      await axios.post("http://localhost:8080/api/books", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      fetchBooks();
+      await createBook(token, newBook);
+      loadBooks();
       setNewBook({ title: "", authorId: "", categoryId: "", image: null });
     } catch (err) {
       console.error("Error creating book:", err);
@@ -120,24 +131,8 @@ export default function BooksPage() {
     if (!editingBook) return;
 
     try {
-      const formData = new FormData();
-      if (newBook.title) formData.append("title", newBook.title);
-      if (newBook.authorId) formData.append("authorId", newBook.authorId);
-      if (newBook.categoryId) formData.append("categoryId", newBook.categoryId);
-      if (newBook.image) formData.append("image", newBook.image);
-
-      await axios.put(
-        `http://localhost:8080/api/books/${editingBook.id}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      fetchBooks();
+      await updateBook(token, editingBook.id, newBook);
+      loadBooks();
       setEditingBook(null);
       setNewBook({ title: "", authorId: "", categoryId: "", image: null });
     } catch (err) {
@@ -147,39 +142,24 @@ export default function BooksPage() {
 
   const handleDeleteBook = async (id) => {
     try {
-      await axios.delete(`http://localhost:8080/api/books/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      fetchBooks();
+      await deleteBook(token, id);
+      loadBooks();
     } catch (err) {
       console.error("Error deleting book:", err);
     }
   };
 
-    const handleToggleReviews = async (bookId) => {
-    if (expandedBookId === bookId) {
-      setExpandedBookId(null);
-      setReviews([]);
-    } else {
-      try {
-        const data = await fetchReviewsForBook(token, bookId);
-        setReviews(data);
-        setExpandedBookId(bookId);
-      } catch (err) {
-        console.error("Error fetching reviews:", err);
-      }
+  const handleAddToWishlist = async (bookId) => {
+    try {
+      await addBookToWishlist(token, userProfileId, bookId);
+      alert("Book added to wishlist!");
+    } catch (err) {
+      console.error("Error adding book to wishlist:", err);
+      alert("Failed to add book to wishlist.");
     }
   };
-
-  const handleAddReview = async (bookId) => {
-    try {
-      await createReview(token, bookId, userProfileId, newReview.rating, newReview.comment);
-      const data = await fetchReviewsForBook(token, bookId);
-      setReviews(data);
-      setNewReview({ rating: 5, comment: "" });
-    } catch (err) {
-      console.error("Error adding review:", err);
-    }
+  const handleSeeDetails = (bookId) => {
+    navigate(`/books/${bookId}`);
   };
 
   return (
@@ -187,6 +167,34 @@ export default function BooksPage() {
     <h2 className={styles.pageTitle}>Books</h2>
 
     <SearchBar placeholder="Search books..." onSearch={handleSearch} />
+
+    <div className={styles.filters}>
+      <select
+        value={selectedCategory}
+        onChange={handleCategoryChange}
+        className={styles.inputField}
+      >
+        <option value="all">All Categories</option>
+        {categories.map((cat) => (
+          <option key={cat.id} value={cat.id}>
+            {cat.name}
+          </option>
+        ))}
+      </select>
+
+      <select
+        value={selectedAuthor}
+        onChange={handleAuthorChange}
+        className={styles.inputField}
+      >
+        <option value="all">All Authors</option>
+        {authors.map((author) => (
+          <option key={author.id} value={author.id}>
+            {author.name}
+          </option>
+        ))}
+      </select>
+    </div>
 
     {userProfileId === null && (
       <form
@@ -265,68 +273,62 @@ export default function BooksPage() {
       </form>
     )}
 
-    <ul className={styles.list}>
-      {filteredBooks.map((book) => (
-        <li key={book.id} className={styles.listItem}>
-          <div onClick={() => handleToggleReviews(book.id)} className={styles.bookHeader}>
-            <span>
-              {book.title} - {book.author?.name || "Unknown"} (
-              {book.category?.name || "Uncategorized"})
-            </span>
-            {userProfileId === null && (
-              <div className={styles.actions}>
-                <button onClick={() => handleEditBook(book)} className={styles.editButton}>
-                  Edit
-                </button>
-                <button onClick={() => handleDeleteBook(book.id)} className={styles.deleteButton}>
-                  Delete
-                </button>
+      <ul className={styles.list}>
+        {filteredBooks.map((book) => (
+          <li key={book.id} className={styles.listItem}>
+            <div className={styles.bookHeader}>
+              <span className={styles.bookTitle}>{book.title}</span>
+              <div className={styles.bookMeta}>
+                {book.author?.name || "Unknown"} ({book.category?.name || "Uncategorized"})
               </div>
-            )}
-          </div>
 
-          {expandedBookId === book.id && (
-            <div className={styles.reviewsContainer}>
-              <h4>Reviews</h4>
-              <ul className={styles.reviewList}>
-                {reviews.length > 0 ? (
-                  reviews.map((rev) => (
-                    <li key={rev.id} className={styles.reviewItem}>
-                      <strong>Rating:</strong> {rev.rating}/10
-                      <p>{rev.comment}</p>
-                    </li>
-                  ))
-                ) : (
-                  <p>No reviews yet.</p>
-                )}
-              </ul>
-
-              {userProfileId && (
-                <div className={styles.addReview}>
-                  <textarea
-                    value={newReview.comment}
-                    onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
-                    placeholder="Write your review..."
-                    className={styles.inputField}
-                  />
-                  <select
-                    value={newReview.rating}
-                    onChange={(e) => setNewReview({ ...newReview, rating: e.target.value })}
-                    className={styles.inputField}
-                  >
-                    {[...Array(10)].map((_, i) => (
-                      <option key={i + 1} value={i + 1}>
-                        {i + 1}
-                      </option>
-                    ))}
-                  </select>
-                  <button onClick={() => handleAddReview(book.id)} className={styles.submitButton}>
-                    Send
-                  </button>
-                </div>
+              {book.imageUrl && (
+                <img
+                  src={book.imageUrl || "/default-avatar.png"}
+                  alt={book.title}
+                  className={styles.bookImage}
+                />
               )}
+
+              <div className={styles.bookActions}>
+                {(userProfileId || userProfileId === null) && (
+                  <>
+                    <button
+                      onClick={() => handleSeeDetails(book.id)}
+                      className={`${styles.actionButton} ${styles.seeDetailsButton}`}
+                    >
+                      See Details
+                    </button>
+
+                    {userProfileId && (
+                      <button
+                        onClick={() => handleAddToWishlist(book.id)}
+                        className={`${styles.actionButton} ${styles.wishlistButton}`}
+                      >
+                        Add to Wishlist
+                      </button>
+                    )}
+
+                    {userProfileId === null && (
+                      <>
+                        <button
+                          onClick={() => handleEditBook(book)}
+                          className={`${styles.actionButton} ${styles.editButton}`}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteBook(book.id)}
+                          className={`${styles.actionButton} ${styles.deleteButton}`}
+                        >
+                          Delete
+                        </button>
+                      </>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
-          )}
         </li>
       ))}
     </ul>

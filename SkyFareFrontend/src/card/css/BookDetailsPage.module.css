@@ -1,0 +1,194 @@
+.pageContainer {
+  max-width: 750px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.pageTitle {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #222;
+}
+
+.meta {
+  text-align: center;
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.bookImage {
+  display: block;
+  max-width: 320px;
+  margin: 0 auto 25px auto;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  object-fit: cover;
+}
+
+.reviewToggle {
+  display: block;
+  margin: 0 auto 15px auto;
+  padding: 10px 24px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s ease;
+}
+
+.reviewToggle:hover {
+  background-color: #0056b3;
+}
+
+.sortContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  justify-content: flex-end;
+  font-size: 14px;
+}
+
+.sortContainer select {
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.reviews {
+  margin-top: 20px;
+}
+
+.noReviews {
+  text-align: center;
+  font-style: italic;
+  color: #999;
+}
+
+.reviewList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.reviewCard {
+  background: #f9f9f9;
+  padding: 18px 22px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  transition: transform 0.15s ease;
+}
+
+.reviewCard:hover {
+  transform: translateY(-2px);
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.reviewUser {
+  color: #333;
+}
+
+.reviewRating {
+  color: #ff9800;
+  font-weight: 600;
+}
+
+.reviewComment {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 12px;
+}
+
+.reviewActions {
+  display: flex;
+  gap: 10px;
+}
+
+.editButton, .deleteButton {
+  padding: 6px 14px;
+  font-size: 13px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.editButton {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.editButton:hover {
+  background-color: #117a8b;
+}
+
+.deleteButton {
+  background-color: #dc3545;
+  color: white;
+}
+
+.deleteButton:hover {
+  background-color: #a71d2a;
+}
+
+.addReview {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.addReview textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: vertical;
+}
+
+.addReview select {
+  width: 60px;
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.submitButton {
+  width: fit-content;
+  padding: 8px 16px;
+  background-color: #28a745;
+  color: white;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.submitButton:hover {
+  background-color: #218838;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .pageContainer { padding: 20px; }
+  .bookImage { max-width: 100%; height: auto; }
+}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import styles from "./css/CategoryPage.module.css";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import {
   fetchCategories,
   addCategory,
@@ -15,7 +16,7 @@ export default function CategoryPage() {
   const [newCategory, setNewCategory] = useState("");
   const [editingCategory, setEditingCategory] = useState(null);
   const [editCategoryName, setEditCategoryName] = useState("");
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (token) {
       loadCategories();
@@ -68,6 +69,11 @@ export default function CategoryPage() {
     }
   };
 
+  const handleCategoryClick = (categoryId) => {
+    console.log("Clicked category:", categoryId);
+    navigate(`/books?author=all&category=${categoryId}`);
+  };
+
   return (
   <div className={styles.pageContainer}>
     <h2 className={styles.pageTitle}>Categories</h2>
@@ -94,7 +100,7 @@ export default function CategoryPage() {
     <ul className={styles.list}>
       {Array.isArray(categories) &&
         categories.map((cat) => (
-          <li key={cat.id} className={styles.listItem}>
+          <li key={cat.id}>
             {editingCategory?.id === cat.id ? (
               userProfileId === null ? (
                 <>
@@ -122,7 +128,7 @@ export default function CategoryPage() {
               )
             ) : (
               <>
-                <span>{cat.name}</span>
+                <span className={styles.listItem} onClick={() => handleCategoryClick(cat.id)}>{cat.name}</span>
                 {userProfileId === null && (
                   <div className={styles.actions}>
                     <button

@@ -57,7 +57,7 @@ export default function AuthPage() {
         console.log("res", res);
         if (res.token) {
           login(res.token, res.userProfileId);
-          navigate("/dashboard");
+          navigate("/books");
         } else {
           setError(res.error || "Login failed");
         }

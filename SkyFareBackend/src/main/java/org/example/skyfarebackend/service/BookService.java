@@ -10,11 +10,13 @@ import org.example.skyfarebackend.model.entities.Category;
 import org.example.skyfarebackend.repository.AuthorRepository;
 import org.example.skyfarebackend.repository.BookRepository;
 import org.example.skyfarebackend.repository.CategoryRepository;
+import org.example.skyfarebackend.repository.ReviewRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -28,6 +30,8 @@ public class BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final CategoryRepository categoryRepository;
+    private final ReviewRepository reviewRepository;
+
 
     public BookResponse createBook(String title, Long authorId, Long categoryId, MultipartFile imageFile) throws IOException {
         Author author = authorRepository.findById(authorId)
@@ -100,11 +104,19 @@ public class BookService {
         return mapToDTO(saved);
     }
 
+    @Transactional
     public void deleteBook(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found with id " + id));
+
+        if (book.getWishlistBy() != null) {
+            book.getWishlistBy().forEach(userProfile -> userProfile.getWishlist().remove(book));
+        }
+
+        reviewRepository.deleteAllByBookId(book.getId());
         bookRepository.delete(book);
     }
+
 
     public BookResponse getBookById(Long id) {
         Book book = bookRepository.findById(id)
